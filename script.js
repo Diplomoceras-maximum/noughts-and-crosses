@@ -18,3 +18,63 @@
 // 6. Function that renders the contents of the gameboard array to page (grid)
 // 7. Functions that allow players to add marks to specific areas on the board by clicking the grid cells
 // 8. Logic that stops players from marking spots that are already taken
+
+// ##################################################
+// Program
+// ##################################################
+
+// Creates one instance of the gameBoard (IIFE)
+const gameBoard = (function () {
+  // Array representing the 3x3 grid, each index is a cell (empty cell = no mark)
+  const board = ["", "", "", "", "", "", "", "", ""];
+
+  // Creates a copy of the current board state without giving direct access to modify it (closure)
+  const getBoard = () => board;
+
+  const updateCell = (index, marker) => {
+    if (board[index] === "") {
+      board[index] = marker;
+      return true;
+    }
+    return false;
+  };
+
+  // Returns the copied board
+  return {
+    getBoard,
+    updateCell,
+  };
+})();
+
+function createPlayer(name, marker) {
+  return { name, marker };
+}
+
+const gameController = (function () {
+  //
+  const playerOne = createPlayer("One", "X");
+  const playerTwo = createPlayer("Two", "O");
+  let currentPlayer = playerOne;
+
+  const playTurn = (position) => {
+    const board = gameBoard.getBoard();
+    if (board[position] === "") {
+      if (gameBoard.updateCell(position, currentPlayer.marker)) {
+        switchPlayer();
+      }
+    }
+  };
+
+  const switchPlayer = () => {
+    currentPlayer = currentPlayer === playerOne ? playerTwo : playerOne;
+  };
+
+  return {
+    playTurn,
+    switchPlayer,
+  };
+})();
+
+console.log(gameBoard.getBoard());
+gameController.playTurn(0);
+console.log(gameBoard.getBoard());
