@@ -41,7 +41,7 @@ const gameBoard = (function () {
     return false;
   };
 
-  // Returns the function outputs
+  // Returns the function outputs to be usable by other functions
   return {
     getBoard,
     updateCell,
@@ -53,7 +53,7 @@ function createPlayer(name, marker) {
   return { name, marker };
 }
 
-// Main game controller handles the game logic
+// Main game controller handles the game logic (IIFE)
 const gameController = (function () {
   // Initialise players
   const playerOne = createPlayer("One", "X");
@@ -125,7 +125,7 @@ const gameController = (function () {
     currentPlayer = currentPlayer === playerOne ? playerTwo : playerOne;
   };
 
-  // Return the function outputs
+  // Returns the function outputs to be usable by other functions
   return {
     playTurn,
     switchPlayer,
