@@ -31,44 +31,101 @@ const gameBoard = (function () {
   // Creates a copy of the current board state without giving direct access to modify it (closure)
   const getBoard = () => board;
 
+  // Updates cell to contain the current players marker
   const updateCell = (index, marker) => {
     if (board[index] === "") {
       board[index] = marker;
       return true;
     }
+    // If cell already taken do not change
     return false;
   };
 
-  // Returns the copied board
+  // Returns the function outputs
   return {
     getBoard,
     updateCell,
   };
 })();
 
+// Creates player object with name and marker
 function createPlayer(name, marker) {
   return { name, marker };
 }
 
+// Main game controller handles the game logic
 const gameController = (function () {
-  //
+  // Initialise players
   const playerOne = createPlayer("One", "X");
   const playerTwo = createPlayer("Two", "O");
+
+  // Start with player one
   let currentPlayer = playerOne;
 
+  // Tracks if game should end
+  let isGameOver = false;
+
+  // Winning index combinations
+  const winningCombos = [
+    // Rows
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    // Columns
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    // Diagonals
+    [0, 4, 8],
+    [2, 4, 6],
+  ];
+
+  // Function for players turn
   const playTurn = (position) => {
+    // Get current state of board
     const board = gameBoard.getBoard();
+
+    // If game is over stop player turns
+    if (isGameOver) {
+      return;
+    }
+
+    // Only allow board position if cell is empty
     if (board[position] === "") {
+      // If empty update cell with current players marker
       if (gameBoard.updateCell(position, currentPlayer.marker)) {
+        // Check if current player has won by checking winning combos
+        for (let combo of winningCombos) {
+          if (
+            board[combo[0]] === currentPlayer.marker &&
+            board[combo[1]] === currentPlayer.marker &&
+            board[combo[2]] === currentPlayer.marker
+          ) {
+            console.log(`${currentPlayer.name} wins!`);
+            isGameOver = true; // End the game
+            return;
+          }
+        }
+
+        // If board is full (No winning combos) the game is a tie
+        if (!board.includes("")) {
+          console.log("It's a tie!");
+          isGameOver = true; // End the game
+          return;
+        }
+
+        // If game continues, switch to the next player
         switchPlayer();
       }
     }
   };
 
+  // Function for switching between players
   const switchPlayer = () => {
     currentPlayer = currentPlayer === playerOne ? playerTwo : playerOne;
   };
 
+  // Return the function outputs
   return {
     playTurn,
     switchPlayer,
@@ -76,5 +133,20 @@ const gameController = (function () {
 })();
 
 console.log(gameBoard.getBoard());
-gameController.playTurn(0);
+// Win example:
+// gameController.playTurn(0);
+// gameController.playTurn(1);
+// gameController.playTurn(3);
+// gameController.playTurn(2);
+// gameController.playTurn(6);
+// Tie example:
+// gameController.playTurn(0);
+// gameController.playTurn(1);
+// gameController.playTurn(2);
+// gameController.playTurn(4);
+// gameController.playTurn(3);
+// gameController.playTurn(5);
+// gameController.playTurn(7);
+// gameController.playTurn(6);
+// gameController.playTurn(8);
 console.log(gameBoard.getBoard());
