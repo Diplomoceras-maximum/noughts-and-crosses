@@ -1,16 +1,157 @@
+:root {
+  --background-colour: white;
+  --text-colour: black;
+  --x-colour: red;
+  --o-colour: blue;
+  --accent-colour: grey;
+  --gridlines-colour: grey;
+  --button-colour: black;
+  --button-hover: rgba(0, 0, 0, 0.8);
+  --main-font: "Inter", sans-serif;
+  --marker-font: "Fredoka", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--background-colour);
+  font-family: var(--main-font);
+  color: var(--text-colour);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+#players-container {
+  display: flex;
+  justify-content: center;
+  gap: 3rem;
+  max-width: 500px;
+  width: 90vmin;
+  text-align: center;
+}
+
+.player {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  border: 5px solid transparent;
+  border-radius: 12px 12px 0 0;
+  position: relative;
+}
+
+.player .mark {
+  font-family: var(--marker-font);
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 700;
+}
+
+.player .name {
+  font-family: var(--main-font);
+  font-weight: 600;
+  color: var(--text-colour);
+  margin-top: 0.25rem;
+}
+
+.player.active {
+  position: relative;
+  border-bottom: none;
+  z-index: 3;
+}
+
+#player-one.active {
+  background-color: lightgrey;
+}
+
+#player-two.active {
+  background-color: lightgrey;
+}
+
+h1 {
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: bold;
+  color: var(--accent-colour);
+  margin-bottom: 1rem;
+}
+
+#game-container {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+#gameboard.x-turn {
+  background-color: lightgrey;
+}
+
+#gameboard.o-turn {
+  background-color: lightgrey;
+}
+
 #gameboard {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-template-rows: 1fr 1fr 1fr;
-  width: 300px;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  width: 90vmin;
+  max-width: 500px;
+  aspect-ratio: 1 / 1;
+  border: 5px solid transparent;
+  border-radius: 12px;
+  padding: 1rem;
+  margin: 0 auto 0 auto;
 }
 
 .cell {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100px;
-  width: 100px;
-  border: 1px solid black;
-  font-size: 60px;
+  font-family: var(--marker-font);
+  font-size: clamp(3rem, 10vmin, 6rem);
+  font-weight: 700;
+  aspect-ratio: 1 / 1;
+  cursor: pointer;
+}
+
+.cell:not(:nth-child(3n)) {
+  border-right: 10px solid var(--gridlines-colour);
+}
+
+.cell:nth-child(-n + 6) {
+  border-bottom: 10px solid var(--gridlines-colour);
+}
+
+.x {
+  color: var(--x-colour);
+}
+
+.o {
+  color: var(--o-colour);
+}
+
+#game-result {
+  font-size: 1.25rem;
+  font-weight: 500;
+  margin: 1rem 0;
+}
+
+button {
+  font-size: 1rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  background-color: var(--button-colour);
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+button:hover {
+  background-color: var(--button-hover);
 }

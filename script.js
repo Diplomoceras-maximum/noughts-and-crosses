@@ -62,8 +62,8 @@ function createPlayer(name, marker) {
 // Main game controller handles the game logic (IIFE)
 const gameController = (function () {
   // Initialise players
-  const playerOne = createPlayer("One", "X");
-  const playerTwo = createPlayer("Two", "O");
+  const playerOne = createPlayer("1", "X");
+  const playerTwo = createPlayer("2", "O");
 
   // Start with player one
   let currentPlayer = playerOne;
@@ -164,6 +164,12 @@ const interfaceController = (function () {
     const board = gameBoard.getBoard();
     cells.forEach((cell, index) => {
       cell.textContent = board[index];
+      cell.classList.remove("x", "o"); // Remove previous classes
+      if (board[index] === "X") {
+        cell.classList.add("x");
+      } else if (board[index] === "O") {
+        cell.classList.add("o");
+      }
     });
   };
 
@@ -176,8 +182,11 @@ const interfaceController = (function () {
   restartBtn.addEventListener("click", () => {
     gameBoard.resetBoard(); // Clear the gameboard array
     gameController.resetGame(); // Reset game logic
-    displayBoard(); // Refresh the UI
-    showResult(`Player ${gameController.getCurrentPlayerName()}'s turn.`); // Clear the message
+    interfaceController.displayBoard(); // Refresh the UI
+    interfaceController.showResult(
+      `Player ${gameController.getCurrentPlayerName()}'s turn.`
+    ); // Clear the message
+    updateActivePlayerUI("X");
   });
 
   // Add marker when clicked
@@ -188,38 +197,48 @@ const interfaceController = (function () {
 
       // After marker is placed change display based on these factors:
       if (result.status === "win") {
-        showResult(`Player ${result.winner} wins!`);
+        interfaceController.showResult(`Player ${result.winner} wins!`);
       } else if (result.status === "tie") {
-        showResult("It's a tie!");
+        interfaceController.showResult("It's a tie!");
       } else if (result.status === "gameover") {
-        showResult("Game is over. Please restart.");
+        interfaceController.showResult("Game is over. Please restart.");
       } else {
-        showResult(`Player ${gameController.getCurrentPlayerName()}'s turn.`);
+        interfaceController.showResult(
+          `Player ${gameController.getCurrentPlayerName()}'s turn.`
+        );
       }
+
+      // Update the active player highlight:
+      updateActivePlayerUI(
+        gameController.getCurrentPlayerName() === "1" ? "X" : "O"
+      );
     });
   });
+
+  const playerOne = document.querySelector("#player-one");
+  const playerTwo = document.querySelector("#player-two");
+  const gameboard = document.querySelector("#gameboard");
+
+  function updateActivePlayerUI(marker) {
+    if (marker === "X") {
+      playerOne.classList.add("active");
+      playerTwo.classList.remove("active");
+      gameboard.classList.add("x-turn");
+      gameboard.classList.remove("o-turn");
+    } else {
+      playerOne.classList.remove("active");
+      playerTwo.classList.add("active");
+      gameboard.classList.add("o-turn");
+      gameboard.classList.remove("x-turn");
+    }
+  }
 
   return {
     displayBoard,
     showResult,
+    updateActivePlayerUI,
   };
 })();
 
-console.log(gameBoard.getBoard());
-// Win example:
-// gameController.playTurn(0);
-// gameController.playTurn(1);
-// gameController.playTurn(3);
-// gameController.playTurn(2);
-// gameController.playTurn(6);
-// Tie example:
-// gameController.playTurn(0);
-// gameController.playTurn(1);
-// gameController.playTurn(2);
-// gameController.playTurn(4);
-// gameController.playTurn(3);
-// gameController.playTurn(5);
-// gameController.playTurn(7);
-// gameController.playTurn(6);
-// gameController.playTurn(8);
-console.log(gameBoard.getBoard());
+interfaceController.updateActivePlayerUI("X");
+interfaceController.showResult("Player 1's turn.");
