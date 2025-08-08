@@ -132,6 +132,54 @@ const gameController = (function () {
   };
 })();
 
+// IIFE for handling the display of the game on the page
+const interfaceController = (function () {
+  // Get elements by class and id
+  const cells = document.querySelectorAll(".cell");
+  const display = document.querySelector("#game-result");
+  const restartBtn = document.querySelector("#restart-btn");
+
+  // Display the current board state on the page
+  const displayBoard = () => {
+    const board = gameBoard.getBoard();
+    cells.forEach((cell, index) => {
+      cell.textContent = board[index];
+    });
+  };
+
+  // Show message of winner or tie
+  const showResult = (message) => {
+    display.textContent = message;
+  };
+
+  // Reset the game
+  restartBtn.addEventListener("click", () => {
+    gameBoard.resetBoard(); // Clear the gameboard array
+    gameController.resetGame(); // Reset game logic
+    displayBoard(); // Refresh the UI
+    showResult(""); // Clear the message
+  });
+
+  // Add marker when clicked
+  cells.forEach((cell, index) => {
+    cell.addEventListener("click", () => {
+      const result = gameController.playTurn(index);
+      displayBoard();
+
+      if (result.status === "win") {
+        showResult(`${result.winner} wins!`);
+      } else if (result.status === "tie") {
+        showResult("It's a tie!");
+      }
+    });
+  });
+
+  return {
+    displayBoard,
+    showResult,
+  };
+})();
+
 console.log(gameBoard.getBoard());
 // Win example:
 // gameController.playTurn(0);
