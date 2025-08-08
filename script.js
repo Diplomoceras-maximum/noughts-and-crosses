@@ -41,10 +41,16 @@ const gameBoard = (function () {
     return false;
   };
 
+  // Reset board function fills array with empty strings
+  const resetBoard = () => {
+    board.fill("");
+  };
+
   // Returns the function outputs to be usable by other functions
   return {
     getBoard,
     updateCell,
+    resetBoard,
   };
 })();
 
@@ -80,6 +86,17 @@ const gameController = (function () {
     [2, 4, 6],
   ];
 
+  // Reset game function for resetting variables
+  const resetGame = () => {
+    isGameOver = false;
+    currentPlayer = playerOne;
+  };
+
+  // Function for retrieving current player name
+  const getCurrentPlayerName = () => {
+    return currentPlayer.name;
+  };
+
   // Function for players turn
   const playTurn = (position) => {
     // Get current state of board
@@ -87,7 +104,7 @@ const gameController = (function () {
 
     // If game is over stop player turns
     if (isGameOver) {
-      return;
+      return { status: "gameover" };
     }
 
     // Only allow board position if cell is empty
@@ -103,7 +120,7 @@ const gameController = (function () {
           ) {
             console.log(`${currentPlayer.name} wins!`);
             isGameOver = true; // End the game
-            return;
+            return { status: "win", winner: currentPlayer.name };
           }
         }
 
@@ -111,11 +128,12 @@ const gameController = (function () {
         if (!board.includes("")) {
           console.log("It's a tie!");
           isGameOver = true; // End the game
-          return;
+          return { status: "tie" };
         }
 
         // If game continues, switch to the next player
         switchPlayer();
+        return { status: "continue" };
       }
     }
   };
@@ -129,6 +147,8 @@ const gameController = (function () {
   return {
     playTurn,
     switchPlayer,
+    resetGame,
+    getCurrentPlayerName,
   };
 })();
 
@@ -157,7 +177,7 @@ const interfaceController = (function () {
     gameBoard.resetBoard(); // Clear the gameboard array
     gameController.resetGame(); // Reset game logic
     displayBoard(); // Refresh the UI
-    showResult(""); // Clear the message
+    showResult(`Player ${gameController.getCurrentPlayerName()}'s turn.`); // Clear the message
   });
 
   // Add marker when clicked
@@ -166,10 +186,15 @@ const interfaceController = (function () {
       const result = gameController.playTurn(index);
       displayBoard();
 
+      // After marker is placed change display based on these factors:
       if (result.status === "win") {
-        showResult(`${result.winner} wins!`);
+        showResult(`Player ${result.winner} wins!`);
       } else if (result.status === "tie") {
         showResult("It's a tie!");
+      } else if (result.status === "gameover") {
+        showResult("Game is over. Please restart.");
+      } else {
+        showResult(`Player ${gameController.getCurrentPlayerName()}'s turn.`);
       }
     });
   });
