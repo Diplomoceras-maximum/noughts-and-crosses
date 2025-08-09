@@ -201,7 +201,7 @@ const interfaceController = (function () {
       } else if (result.status === "tie") {
         interfaceController.showResult("It's a tie!");
       } else if (result.status === "gameover") {
-        interfaceController.showResult("Game is over. Please restart.");
+        interfaceController.showResult("Game Over.");
       } else {
         interfaceController.showResult(
           `Player ${gameController.getCurrentPlayerName()}'s turn.`

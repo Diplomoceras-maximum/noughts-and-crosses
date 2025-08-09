@@ -28,7 +28,7 @@ body {
 #players-container {
   display: flex;
   justify-content: center;
-  gap: 3rem;
+  gap: 2rem;
   max-width: 500px;
   width: 90vmin;
   text-align: center;
@@ -69,6 +69,13 @@ body {
 
 #player-two.active {
   background-color: lightgrey;
+}
+
+#game-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.5rem;
 }
 
 h1 {
@@ -138,7 +145,6 @@ h1 {
 #game-result {
   font-size: 1.25rem;
   font-weight: 500;
-  margin: 1rem 0;
 }
 
 button {
