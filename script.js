@@ -175,7 +175,7 @@ const interfaceController = (function () {
 
   // Show message of winner or tie
   const showResult = (message) => {
-    display.textContent = message;
+    display.innerHTML = message;
   };
 
   // Reset the game
@@ -183,10 +183,8 @@ const interfaceController = (function () {
     gameBoard.resetBoard(); // Clear the gameboard array
     gameController.resetGame(); // Reset game logic
     interfaceController.displayBoard(); // Refresh the UI
-    interfaceController.showResult(
-      `Player ${gameController.getCurrentPlayerName()}'s turn.`
-    ); // Clear the message
-    updateActivePlayerUI("X");
+    interfaceController.displayCurrentTurn();
+    interfaceController.updateActivePlayerUI("X");
   });
 
   // Add marker when clicked
@@ -197,15 +195,15 @@ const interfaceController = (function () {
 
       // After marker is placed change display based on these factors:
       if (result.status === "win") {
-        interfaceController.showResult(`Player ${result.winner} wins!`);
+        const className = result.winner === "1" ? "red-text" : "blue-text";
+        const coloredPlayer = `<span class="${className}">Player ${result.winner}</span>`;
+        interfaceController.showResult(`${coloredPlayer} wins!`);
       } else if (result.status === "tie") {
         interfaceController.showResult("It's a tie!");
       } else if (result.status === "gameover") {
         interfaceController.showResult("Game Over.");
       } else {
-        interfaceController.showResult(
-          `Player ${gameController.getCurrentPlayerName()}'s turn.`
-        );
+        interfaceController.displayCurrentTurn();
       }
 
       // Update the active player highlight:
@@ -233,12 +231,20 @@ const interfaceController = (function () {
     }
   }
 
+  function displayCurrentTurn() {
+    const currentPlayerName = gameController.getCurrentPlayerName();
+    const className = currentPlayerName === "1" ? "red-text" : "blue-text";
+    const colouredPlayer = `<span class="${className}">Player ${currentPlayerName}</span>`;
+    interfaceController.showResult(`${colouredPlayer}'s turn.`);
+  }
+
   return {
     displayBoard,
     showResult,
     updateActivePlayerUI,
+    displayCurrentTurn,
   };
 })();
 
 interfaceController.updateActivePlayerUI("X");
-interfaceController.showResult("Player 1's turn.");
+interfaceController.displayCurrentTurn();

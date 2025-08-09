@@ -161,3 +161,13 @@ button {
 button:hover {
   background-color: var(--button-hover);
 }
+
+.red-text {
+  color: red;
+  font-weight: bold;
+}
+
+.blue-text {
+  color: blue;
+  font-weight: bold;
+}
